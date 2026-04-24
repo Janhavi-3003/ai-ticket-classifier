@@ -4,7 +4,7 @@ import json
 # Add your Gemini API Key here
 genai.configure(api_key="YOUR_GEMINI_API_KEY")
 
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 messages = [
     "My payment got deducted but service is not activated",
