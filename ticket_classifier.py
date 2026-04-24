@@ -1,10 +1,10 @@
-from openai import OpenAI
+import google.generativeai as genai
 import json
 
-# Add your OpenAI API Key here
-client = OpenAI(
-    api_key="YOUR_API_KEY_HERE"
-)
+# Add your Gemini API Key here
+genai.configure(api_key="YOUR_GEMINI_API_KEY")
+
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 messages = [
     "My payment got deducted but service is not activated",
@@ -29,7 +29,8 @@ Priority Levels:
 - Medium
 - Low
 
-Return ONLY valid JSON:
+Return ONLY valid JSON like this:
+
 {{
     "category": "",
     "priority": ""
@@ -39,18 +40,12 @@ Message:
 "{message}"
 """
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        temperature=0
-    )
+    response = model.generate_content(prompt)
 
-    result = response.choices[0].message.content.strip()
+    result = response.text.strip()
+
+    # Remove markdown if Gemini adds ```json
+    result = result.replace("```json", "").replace("```", "").strip()
 
     try:
         return json.loads(result)
